@@ -71,7 +71,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Determine namespace and repo name from request path
 	repoNamespace, repoName := getNamespaceAndRepo(repoUrlPath)
 	if repoName == "" {
-		logError("auth", fmt.Errorf("no repo name provided"))
+		logError("auth", fmt.Errorf("No repo name provided"))
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if repoNamespace == "" || repoNamespace == nil {
+		logError("auth", fmt.Errorf("No repo user namespace provided"))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

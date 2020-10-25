@@ -6,6 +6,13 @@ import (
 	"path/filepath"
 )
 
+// HookScripts represents all repository server-size git hooks
+type HookScripts struct {
+	PreReceive  string
+	Update      string
+	PostReceive string
+}
+
 type Config struct {
 	KeyDir     string       // Directory for server ssh keys. Only used in SSH strategy.
 	Dir        string       // Directory that contains repositories
@@ -15,13 +22,6 @@ type Config struct {
 	AutoHooks  bool         // Automatically setup git hooks
 	Hooks      *HookScripts // Scripts for hooks/* directory
 	Auth       bool         // Require authentication
-}
-
-// HookScripts represents all repository server-size git hooks
-type HookScripts struct {
-	PreReceive  string
-	Update      string
-	PostReceive string
 }
 
 // Configure hook scripts in the repo base directory
