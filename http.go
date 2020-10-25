@@ -76,7 +76,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if repoNamespace == "" || repoNamespace == nil {
+	if repoNamespace == "" {
 		logError("auth", fmt.Errorf("No repo user namespace provided"))
 		w.WriteHeader(http.StatusBadRequest)
 		return
