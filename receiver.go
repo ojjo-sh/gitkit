@@ -28,6 +28,53 @@ func ReadCommitMessage(sha string) (string, error) {
 	return strings.TrimSpace(string(buff)), nil
 }
 
+func ReadChangeList(sha string) (string, error) {
+	buff, err := exec.Command("git", "show", "--pretty=\"\"", "--name-only", sha).Output()
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(buff)), nil
+}
+
+func GetCommitJSON(sha string) (string, error) {
+	buff, err := exec.Command(
+		"git",
+		"log",
+		`--pretty=format:'{%n 
+			"commit": "%H",%n \
+			"abbreviated_commit": "%h",%n \
+			"tree": "%T",%n \
+			"abbreviated_tree": "%t",%n \
+			"parent": "%P",%n \
+			"abbreviated_parent": "%p",%n \
+			"refs": "%D",%n \
+			"encoding": "%e",%n \
+			"subject": "%s",%n \
+			"sanitized_subject_line": "%f",%n \
+			"body": "%b",%n \
+			"commit_notes": "%N",%n \
+			"verification_flag": "%G?",%n \
+			"signer": "%GS",%n \
+			"signer_key": "%GK",%n \
+			"author": {%n \
+				"name": "%aN",%n \
+				"email": "%aE",%n \
+				"date": "%aD"%n \
+			},%n \
+			"commiter": {%n \
+				"name": "%cN",%n \
+				"email": "%cE",%n \
+				"date": "%cD",%n \
+			}%n \
+		},`,
+	).Output()
+
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(buff)), nil
+}
+
 func IsForcePush(hook *HookInfo) (bool, error) {
 	// New branch or tag OR deleted branch or tag
 	if hook.OldRev == ZeroSHA || hook.NewRev == ZeroSHA {
